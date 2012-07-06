@@ -103,9 +103,10 @@ class SnapScript:
         # Not calling conn.put_container() for the same reason of permissions.
 
         key_name = self.cfg["prefix"] + '/' + "i" + tag
-        # XXX set mime type? how? does it exist in CF/Swift?
+        mimetype = "image/jpeg"
+        headers = { "Content-Type": mimetype }
         fp = open(self.cfg["file"], 'rb')
-        conn.put_object(self.cfg["bucket"], key_name, fp)
+        conn.put_object(self.cfg["bucket"], key_name, fp, headers=headers)
         fp.close()
 
     def upload(self):
