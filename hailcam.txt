@@ -1,0 +1,29 @@
+* Hailcam *
+Webcam in S3
+v.1
+
+The main element is a "stream": a (looping) collection of images and/or
+video. It usually corresponds to one webcam, but one can create a meta
+stream if desired. A stream corresponds to a key prefix in S3, so that
+all images in the stream have the same prefix. By convention hailcam
+prefix ends with a slash, although it's not mandated (SHOULD).
+
+Images and other keys are distinguished by their first letter
+after the prefix. Known types:
+
+_ - service (usually a pre-generated index for HTML browsers)
+i - image
+t - thumbnail
+p - frame (page)
+
+Clients are expected to use a prefix listing in S3 to find all keys
+in the stream. Note that it's possible to use the same prefix listing
+to find keys of a particular type.
+
+Example:
+
+${ROOTURL}hailcamtest/             <---- prefix for stream hailcamtest/
+${ROOTURL}hailcamtest/_index.html  <---- service index
+${ROOTURL}hailcamtest/i19700521    <---- image (right off cam)
+${ROOTURL}hailcamtest/t19700521    <---- thumbnail for i19700521
+${ROOTURL}hailcamtest/p19700521    <---- HTML frame for i19700521
