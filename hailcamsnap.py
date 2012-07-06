@@ -100,7 +100,7 @@ class SnapScript:
         conn = Connection(auth_url, user, self.cfg["s3pass"],
                           snet=False, tenant_name=tenant, auth_version="2")
 
-	# Not calling conn.put_container() for the same reason of permissions.
+        # Not calling conn.put_container() for the same reason of permissions.
 
         fp = open(self.cfg["file"], 'rb')
         conn.put_object(self.cfg["bucket"], 'i'+tag, fp)
