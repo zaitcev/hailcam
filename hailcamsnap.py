@@ -102,8 +102,10 @@ class SnapScript:
 
         # Not calling conn.put_container() for the same reason of permissions.
 
+        key_name = self.cfg["prefix"] + '/' + "i" + tag
+        # XXX set mime type? how? does it exist in CF/Swift?
         fp = open(self.cfg["file"], 'rb')
-        conn.put_object(self.cfg["bucket"], 'i'+tag, fp)
+        conn.put_object(self.cfg["bucket"], key_name, fp)
         fp.close()
 
     def upload(self):
@@ -151,6 +153,9 @@ def config(cfgname, inisect):
 
     if cfg["s3mode"] == 'cfk2' and len(cfg["s3user"].split(':')) == 1:
         raise ConfigError("Must have a ':' in user " + cfg["s3user"])
+
+    dirname0 = cfg["prefix"]
+    cfg["prefix"] = dirname0[:1] + dirname0[1:].rstrip('/')
 
     return cfg
 
