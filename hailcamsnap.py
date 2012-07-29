@@ -161,31 +161,30 @@ def config(cfgname, inisect):
     return cfg
 
 # main()
-# def main(args):
+def main(args):
+    argc = len(args)
+    if argc == 1:
+        cfgname = "hailcamsnap.ini"
+    elif argc == 2:
+        cfgname = sys.argv[1]
+    else:
+        print >>sys.stderr, "Usage: hailcamsnap [hailcamsnap.ini]"
+        sys.exit(1)
 
-argc = len(sys.argv)
-if argc == 1:
-    cfgname = "hailcamsnap.ini"
-elif argc == 2:
-    cfgname = sys.argv[1]
-else:
-    print >>sys.stderr, "Usage: hailcamsnap [hailcamsnap.ini]"
-    sys.exit(1)
+    try:
+        cfg = config(cfgname, "snap")
+    except ConfigError, e:   # This is our exception. Other types traceback.
+        print >>sys.stderr, "Error in config file " + cfgname + ":", e
+        sys.exit(1)
 
-try:
-    cfg = config(cfgname, "snap")
-except ConfigError, e:   # This is our exception. Other types traceback.
-    print >>sys.stderr, "Error in config file " + cfgname + ":", e
-    sys.exit(1)
+    t = SnapScript(cfg)
+    while 1:
+        rc = t.fetch()
+        if rc == 0:
+            t.upload()
+        print "Sleeping %(ss)gs" % { 'ss' : cfg["sleepval"] }
+        time.sleep(cfg["sleepval"])
 
-t = SnapScript(cfg)
-while 1:
-    rc = t.fetch()
-    if rc == 0:
-        t.upload()
-    print "Sleeping %(ss)gs" % { 'ss' : cfg["sleepval"] }
-    time.sleep(cfg["sleepval"])
-
-## http://utcc.utoronto.ca/~cks/space/blog/python/ImportableMain
-#if __name__ == "__main__":
-#    main(sys.argv[1:])
+# http://utcc.utoronto.ca/~cks/space/blog/python/ImportableMain
+if __name__ == "__main__":
+    main(sys.argv)
